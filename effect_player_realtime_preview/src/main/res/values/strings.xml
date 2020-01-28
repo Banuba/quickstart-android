@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Effect Player realtime preview</string>
+    <string name="camera_preview">Camera Preview</string>
+    <string name="camera_preview_description">Open camera with Banuba SDK</string>
+
+    <string name="apply_mask">Apply Mask</string>
+    <string name="apply_mask_description">Apply mask with Banuba SDK</string>
+
+    <string name="record_video">Record video</string>
+    <string name="record_video_description">Record video with Banuba SDK</string>
+
+    <string name="show_mask">Show mask</string>
+    <string name="hide_mask">Hide mask</string>
+
+    <string name="tap_on_mask">Tap on mask to see another style</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="record_audio">Record audio</string>
+</resources>

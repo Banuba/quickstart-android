@@ -1,0 +1,74 @@
+draw_order = ["retouch", "octopus", "!glfx_FACE_SHADOW", "heart", "like", "eyelashes"]
+shadowmap_size = 512
+
+[materials]
+
+[materials.heart]
+fs = "video_a.frag"
+colorwrite = true
+backfaces = true
+vs = "hearts.vert"
+zwrite = false
+shadow = false
+blend = "alpha"
+
+[materials.heart.samplers]
+
+[materials.eyelashes]
+fs = "pbr.frag"
+colorwrite = true
+backfaces = true
+vs = "vertex.vert"
+zwrite = true
+shadow = true
+blend = "alpha"
+
+[materials.eyelashes.samplers]
+tex_normal = "eyelashes_Normal.ktx"
+tex_diffuse = "eyelashes_Base_Color.ktx"
+tex_mrao = "eyelashes_MRAO.ktx"
+
+[materials.retouch]
+fs = "retouch.frag"
+colorwrite = true
+backfaces = false
+vs = "retouch.vert"
+mouth = true
+zwrite = true
+onface = true
+shadow = false
+blend = "off"
+
+[materials.retouch.samplers]
+lookupTexEyes = "lut_80_percent.png"
+selection_tex = "redmasksuperpuperbest.png"
+lookupTexTeeth = "teeth_highlighter5.png"
+
+[materials.octopus]
+fs = "ibl.frag"
+colorwrite = true
+backfaces = false
+vs = "vertex.vert"
+zwrite = true
+shadow = true
+blend = "alpha"
+
+[materials.octopus.samplers]
+tex_normal = "octopus_Normal.ktx"
+tex_mrao = "octopus_MRAO.ktx"
+tex_brdf = "brdf.ktx"
+tex_diffuse = "octopus_Base_Color.ktx"
+tex_ibl_diff = "ibl_diff.ktx"
+tex_ibl_spec = "ibl_spec.ktx"
+
+[materials.like]
+fs = "like.frag"
+colorwrite = true
+backfaces = true
+vs = "like.vert"
+zwrite = false
+shadow = false
+blend = "alpha"
+
+[materials.like.samplers]
+tex = "like.png"

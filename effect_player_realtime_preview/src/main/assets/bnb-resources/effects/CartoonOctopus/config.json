@@ -1,0 +1,54 @@
+{
+    "name": "CartoonOctopus", 
+    "frx": {
+        "type": "3d_anim", 
+        "3d_anim": {
+            "type": "vfx"
+        }, 
+        "media": {
+            "type": "VIDEO", 
+            "file": "OctopusHeartOnHead.mp4"
+        }
+    }, 
+    "final": {
+        "type": "FILTER", 
+        "filter": {
+            "fragmentCode": "finalColorFilter.fsh", 
+            "textures": [
+                {
+                    "file": "cardio.png", 
+                    "sampler": "lookupTexture", 
+                    "magFilter": "LINEAR", 
+                    "minFilter": "LINEAR"
+                }
+            ]
+        }
+    }, 
+    "sounds": [
+        {
+            "trackName": "Octopus_Intro.ogg"
+        }, 
+        {
+            "trackName": "Octopus_Soundfont_Strings.ogg"
+        }, 
+        {
+            "trackName": "Octopus_Love_Hearts.ogg"
+        }, 
+        {
+            "trackName": "Octopus_Jump.ogg"
+        }, 
+        {
+            "trackName": "fall_down_to_ear.ogg"
+        },
+        {
+            "trackName": "jump_from_ear.ogg"
+        },
+        {
+            "trackName": "Long_talking.ogg"
+        }, 
+        {
+            "trackName": "octopus_hello.ogg"
+        }
+    ], 
+    "recordDuration": 20
+}
