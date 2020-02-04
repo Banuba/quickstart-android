@@ -1,0 +1,19 @@
+{
+    "name": "UnluckyWitch",
+    "effectVersionInfo": {
+        "commit": "43d224e29bc3317d976c0073abbec8b89d5441c0",
+        "date": "2019-08-20",
+        "time": "17:09:02",
+        "author": "Anton Korshunov"
+    },
+    "buildToolsVersionInfo": {
+        "commit": "5e34e9146cefc02127933efe4652ef5924f095dc",
+        "date": "2019-11-18",
+        "time": "13:39:53",
+        "author": "Aleksey Cherkes"
+    },
+    "capabilities": {
+        "effectPlayerMajorVersion": 5,
+        "effectPlayerMinorVersion": 1
+    }
+}

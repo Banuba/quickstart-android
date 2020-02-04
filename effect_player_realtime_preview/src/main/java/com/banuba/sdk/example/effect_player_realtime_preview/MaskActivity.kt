@@ -20,8 +20,7 @@ import kotlinx.android.synthetic.main.activity_camera_preview.surfaceView
 class MaskActivity : AppCompatActivity() {
 
     companion object {
-        // TODO use another mask(with styles) before publishing on GitHub
-        private const val MASK_NAME = "CartoonOctopus"
+        private const val MASK_NAME = "UnluckyWitch"
 
         private const val REQUEST_CODE_APPLY_MASK_PERMISSION = 1001
 
@@ -114,13 +113,10 @@ class MaskActivity : AppCompatActivity() {
             getString(R.string.show_mask)
         }
 
-        // TODO: enable this label when touch enabled effect will be added
-        maskStyleView.visibility = View.GONE
-
-//        maskStyleView.visibility = if (shouldApply) {
-//            View.VISIBLE
-//        } else {
-//            View.GONE
-//        }
+        maskStyleView.visibility = if (shouldApply) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 }
