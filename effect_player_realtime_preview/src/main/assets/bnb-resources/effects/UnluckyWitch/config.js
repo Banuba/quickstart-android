@@ -140,6 +140,7 @@ function Effect() {
 
     this.init = function() {
         Api.meshfxMsg("spawn", 9, 0, "!glfx_FACE");
+        Api.meshfxMsg("shaderVec4", 0, 0, currSet === 2 ? "1.0" : "0.0");
         spawnMeshes();
         applyMakeup();
         applySoft();
@@ -149,7 +150,9 @@ function Effect() {
         Api.playSound("music.ogg", true, 1);
 
         Api.showHint("Tap");
-        timeOut(3000, Api.hideHint);
+        timeOut(3000, function(){
+            Api.hideHint();
+        });
 
         Api.showRecordButton();
     };
