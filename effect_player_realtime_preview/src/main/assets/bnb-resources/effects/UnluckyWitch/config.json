@@ -1,0 +1,49 @@
+{
+  "name": "UnluckyWitch",
+  "recordDuration": 15,
+  "sounds": [
+    {
+      "trackName": "music.ogg",
+      "volume": 1.0,
+      "type": "background"
+    },
+    {
+      "trackName": "sfx_1.ogg",
+      "volume": 1.0,
+      "type": "background"
+    }
+  ],
+  "frx": {
+    "type": "3d_anim",
+    "3d_anim": {
+      "type": "vfx"
+    },
+    "media": {
+      "type": "VIDEO",
+      "file": "RabbitEar.mp4",
+      "videoSpeed": 1.0
+    }
+ },
+ "foreground": {
+  "type": "MEDIA",
+  "media": {
+    "type": "VIDEO",
+    "mode": "RGBA",
+    "file": "magic.mp4",
+    "videoSpeed": 1.0
+  }
+},
+  "final" : {
+      "type" : "FILTER",
+      "filter" : {
+        "fragmentCode" : "finalColorFilter.fsh",
+        "textures" : [{
+          "file" : "sunny.png",
+          "sampler" : "lookupTexture",
+          "magFilter" : "LINEAR",
+          "minFilter" : "LINEAR"
+        }]
+      }
+  },
+  "rotation_vector": true
+}

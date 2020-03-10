@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.banuba.sdk.example.effect_player_realtime_preview">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <application
+        android:name=".Application"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true"
+        android:largeHeap="true">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".CameraPreviewActivity"
+            android:label="@string/camera_preview_description"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".MaskActivity"
+            android:label="@string/apply_mask_description"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".VideoRecordingActivity"
+            android:label="@string/record_video_description"
+            android:screenOrientation="portrait"/>
+    </application>
+
+</manifest>

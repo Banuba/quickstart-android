@@ -1,0 +1,256 @@
+warp_mesh = "Morph.bsm2"
+msaa = 1
+shadowmap_size = 512
+adjust_znear = 150
+draw_order = ['retouch', '!glfx_WARP_IMAGE', 'mat_morph', 'cut', 'mat_hairExploded', 'hat', 'hair', 'hair_alfa_ph', 'hair_alfa', 'Piggy', 'glass', 'glass_opas', 'hair_line', 'Ear_shadow_mat', 'mat_RabbitEar', 'mat_rabbit']
+
+# Retouch
+[materials.retouch]
+vs = "retouch.vert"
+fs = "retouch.frag"
+blend = "off" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+onface = true
+mouth = true
+[materials.retouch.samplers]
+lookupTexTeeth="lut3d_TEETH_medium.png"
+lookupTexEyes="lut3d_EYES_medium.png"
+tex_softLight=1
+tex_normalMakeup=0
+tex_highlight="FLARE_41_512.png"
+
+# Cut
+[materials.mat_morph]
+vs = "cut.vert"
+fs = "cut.frag"
+blend = "off"
+backfaces = false
+colorwrite = false
+zwrite = true
+shadow = false
+samplers = {}
+
+# Cut
+[materials.cut]
+vs = "cut.vert"
+fs = "cut.frag"
+blend = "off"
+backfaces = false
+colorwrite = false
+zwrite = true
+shadow = false
+samplers = {}
+
+# PBR
+[materials.Piggy]
+vs = "piggy.vert"
+fs = "piggy.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.Piggy.samplers]
+tex_diffuse="Piggy_Base_Color.ktx"
+tex_normal="Piggy_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="Piggy_MRAO.ktx"
+
+# PBR
+[materials.hat]
+vs = "hat.vert"
+fs = "hat.frag"
+blend = "off" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.hat.samplers]
+tex_diffuse="hat_Base_Color.ktx"
+tex_normal="hat_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="hat_MRAO.ktx"
+
+# PBR
+[materials.mat_hairExploded]
+vs = "mat_hairexploded.vert"
+fs = "mat_hairexploded.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = true
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.mat_hairExploded.samplers]
+tex_diffuse="mat_hairExploded_Base_Color.ktx"
+tex_normal="mat_hairExploded_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="mat_hairExploded_MRAO.ktx"
+
+# PBR
+[materials.hair]
+vs = "hair.vert"
+fs = "hair.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = true
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.hair.samplers]
+tex_diffuse="hair_Base_Color.ktx"
+tex_normal="hair_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="hair_MRAO.ktx"
+
+# PBR
+[materials.hair_alfa_ph]
+vs = "hair_alfa_ph.vert"
+fs = "hair_alfa.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = true
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.hair_alfa_ph.samplers]
+tex_diffuse="hair_alfa_Base_Color.ktx"
+tex_normal="hair_alfa_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="hair_alfa_MRAO.ktx"
+
+# PBR
+[materials.hair_alfa]
+vs = "hair_alfa.vert"
+fs = "hair_alfa.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = true
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.hair_alfa.samplers]
+tex_diffuse="hair_alfa_Base_Color.ktx"
+tex_normal="hair_alfa_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="hair_alfa_MRAO.ktx"
+
+# PBR
+[materials.glass]
+vs = "glass.vert"
+fs = "glass.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.glass.samplers]
+tex_diffuse=0
+tex_normal="glass_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="glass_MRAO.ktx"
+
+# PBR
+[materials.glass_opas]
+vs = "glass_opas.vert"
+fs = "glass_opas.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.glass_opas.samplers]
+tex_diffuse="glass_opas_Base_Color.ktx"
+tex_normal="glass_opas_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="glass_opas_MRAO.ktx"
+tex_skybox="cubemap.ktx"
+
+# PBR
+[materials.hair_line]
+vs = "hair_line.vert"
+fs = "hair_line.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = true
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.hair_line.samplers]
+tex_diffuse="hair_line_Base_Color.ktx"
+tex_normal="hair_line_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="hair_line_MRAO.ktx"
+
+# PBR
+[materials.Ear_shadow_mat]
+vs = "ear_shadow_mat.vert"
+fs = "ear_shadow_mat.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.Ear_shadow_mat.samplers]
+tex_diffuse="Ear_shadow_Base_Color.ktx"
+tex_normal="Ear_shadow_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="Ear_shadow_MRAO.ktx"
+tex_metallic="no_Metallic.png"
+tex_roughness="no_Roughness.png"
+
+# PBR
+[materials.mat_RabbitEar]
+vs = "mat_rabbitear.vert"
+fs = "mat_rabbitear.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.mat_RabbitEar.samplers]
+tex_diffuse="glass_opas_Base_Color.ktx"
+tex_normal="glass_opas_Normal.ktx"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="glass_opas_MRAO.ktx"
+tex_metallic="no_Metallic.png"
+tex_roughness="no_Roughness.png"
+
+# PBR
+[materials.mat_rabbit]
+vs = "mat_rabbit.vert"
+fs = "mat_rabbit.frag"
+blend = "alpha" # "alpha", "premul_alpha", "screen", "add", "multiply", "coverage", "off"
+backfaces = false
+colorwrite = true
+zwrite = true
+shadow = false
+[materials.mat_rabbit.samplers]
+tex_diffuse="rabbit.png"
+tex_normal="glass_opas_Normal.ktx"
+tex_metallic="no_Metallic.png"
+tex_roughness="no_Roughness.png"
+tex_brdf="brdf.ktx"
+tex_ibl_diff="ibl_diff.ktx"
+tex_ibl_spec="ibl_spec.ktx"
+tex_mrao="glass_opas_MRAO.ktx"
