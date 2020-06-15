@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.banuba.sdk.effect_player.Effect
 import com.banuba.sdk.manager.BanubaSdkManager
 import com.banuba.sdk.manager.BanubaSdkTouchListener
 import kotlinx.android.synthetic.main.activity_apply_mask.*
@@ -40,6 +41,7 @@ class MaskActivity : AppCompatActivity() {
     }
 
     private var shouldApply = false
+    private var effect: Effect? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class MaskActivity : AppCompatActivity() {
         // Set custom OnTouchListener to change mask style.
         surfaceView.setOnTouchListener(BanubaSdkTouchListener(this, banubaSdkManager.effectPlayer))
 
+
         showMaskButton.setOnClickListener {
             shouldApply = !shouldApply
 
@@ -55,10 +58,10 @@ class MaskActivity : AppCompatActivity() {
 
             if (shouldApply) {
                 // The mask is loaded asynchronously and applied
-                banubaSdkManager.effectPlayer.loadEffect(maskUri.toString())
+                effect = banubaSdkManager.effectManager.loadAsync(maskUri.toString())
             } else {
                 // The mask is unloaded
-                banubaSdkManager.effectPlayer.unloadEffect()
+                banubaSdkManager.effectManager.unload(effect)
             }
         }
     }
