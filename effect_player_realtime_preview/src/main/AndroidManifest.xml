@@ -38,6 +38,11 @@
             android:name=".VideoRecordingActivity"
             android:label="@string/record_video_description"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".arcloud.ArCloudMasksActivity"
+            android:label="@string/apply_ar_cloud_mask_description"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

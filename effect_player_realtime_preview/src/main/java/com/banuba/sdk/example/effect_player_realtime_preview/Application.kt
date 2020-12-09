@@ -1,12 +1,22 @@
 package com.banuba.sdk.example.effect_player_realtime_preview
 
+import com.banuba.sdk.arcloud.di.ArCloudKoinModule
 import com.banuba.sdk.manager.BanubaSdkManager
 import com.banuba.sdk.example.common.BANUBA_CLIENT_TOKEN
+import com.banuba.sdk.example.effect_player_realtime_preview.arcloud.MainKoinModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class Application : android.app.Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+
+        startKoin {
+            androidContext(this@Application)
+            modules(ArCloudKoinModule().module + MainKoinModule().module)
+        }
 
         // It crashes if token is empty string with
         //
