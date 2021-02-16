@@ -11,6 +11,7 @@
 
     <string name="apply_ar_cloud_mask">Apply ArCloud Mask</string>
     <string name="apply_ar_cloud_mask_description">Apply ArCloud Mask with Banuba SDK</string>
+    <string name="ar_cloud_client_id">PUT YOUR AR CLOUD CLIENT ID HERE</string>
 
     <string name="show_mask">Show mask</string>
     <string name="hide_mask">Hide mask</string>

@@ -1,6 +1,8 @@
 package com.banuba.sdk.example.effect_player_realtime_preview.arcloud
 
 import com.banuba.sdk.arcloud.data.source.ArEffectsRepositoryProvider
+import com.banuba.sdk.example.effect_player_realtime_preview.R
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -17,7 +19,7 @@ class MainKoinModule {
         }
 
         single(named("arEffectsCloudUuid"), override = true) {
-            "44002e77-8a84-4583-bc26-d02a41f76c38"
+            androidContext().getString(R.string.ar_cloud_client_id)
         }
 
 
