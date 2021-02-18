@@ -9,6 +9,12 @@ Quick start examples for [Banuba SDK on Android](https://docs.banuba.com/docs/an
 3. Copy and Paste your client token into appropriate section of `quickstart-android/client_token/com/banuba/sdk/example/common/BanubaClientToken.kt`
 4. Open the project in Android Studio and run the necessary target using the usual steps.
 
+# AR Cloud
+
+ 1. Get the latest BanubaARCloud SDK archive for Android and the client CloudId. Please fill in our form on [form on banuba.com](https://www.banuba.com/face-filters-sdk) website, or contact us via [info@banuba.com](mailto:info@banuba.com).
+ 2. Copy `ar-cloud-*.aar` library into `quickstart-android/libs/` directory.
+ 3. Put your client CloudId [here](https://github.com/Banuba/quickstart-android/blob/master/effect_player_realtime_preview/src/main/res/values/strings.xml#L14).
+
 # Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -18,10 +24,3 @@ Contributions are what make the open source community such an amazing place to b
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-
-# AR Cloud
-
- 1. Get the latest BanubaARCloud SDK archive for Android and the client CloudId. Please fill in our form on [form on banuba.com](https://www.banuba.com/face-filters-sdk) website, or contact us via [info@banuba.com](mailto:info@banuba.com).
- 2. Copy `ar-cloud-*.aar` library into `quickstart-android/libs/` directory.
- 3. Put your client CloudId [here](https://github.com/Banuba/quickstart-android/blob/master/effect_player_realtime_preview/src/main/res/values/strings.xml#L14).
