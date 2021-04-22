@@ -38,6 +38,23 @@
             android:name=".VideoRecordingActivity"
             android:label="@string/record_video_description"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".VideoMaskActivity"
+            android:label="@string/record_video_description"
+            android:screenOrientation="portrait"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.banuba.sdk.example.effect_player_realtime_preview"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+
     </application>
 
 </manifest>

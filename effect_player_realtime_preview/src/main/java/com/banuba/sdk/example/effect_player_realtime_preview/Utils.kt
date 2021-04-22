@@ -3,6 +3,10 @@ package com.banuba.sdk.example.effect_player_realtime_preview
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 
 fun Context.requireAllPermissionsGranted(
@@ -22,5 +26,26 @@ fun Context.requireAllPermissionsGranted(
         false
     } else {
         true
+    }
+}
+
+
+class FileUtils {
+
+    companion object {
+
+        @JvmStatic
+        fun copyFromAssetsToFile(context: Context, filename: String): File {
+
+            val file = File(context.getExternalFilesDir(null), filename)
+            val dir = file.parentFile
+            dir?.mkdirs()
+            BufferedInputStream(context.assets.open(filename)).copyTo(
+                BufferedOutputStream(
+                    FileOutputStream(file)
+                )
+            )
+            return file
+        }
     }
 }
