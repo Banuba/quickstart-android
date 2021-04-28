@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_camera_preview.surfaceView
 class MaskActivity : AppCompatActivity() {
 
     companion object {
-        private const val MASK_NAME = "UnluckyWitch"
+        private const val MASK_NAME = "TrollGrandma"
 
         private const val REQUEST_CODE_APPLY_MASK_PERMISSION = 1001
 
@@ -61,7 +61,7 @@ class MaskActivity : AppCompatActivity() {
                 effect = banubaSdkManager.effectManager.loadAsync(maskUri.toString())
             } else {
                 // The mask is unloaded
-                banubaSdkManager.effectManager.unload(effect)
+                banubaSdkManager.effectManager.loadAsync("")
             }
         }
     }
@@ -114,12 +114,6 @@ class MaskActivity : AppCompatActivity() {
             getString(R.string.hide_mask)
         } else {
             getString(R.string.show_mask)
-        }
-
-        maskStyleView.visibility = if (shouldApply) {
-            View.VISIBLE
-        } else {
-            View.GONE
         }
     }
 }

@@ -12,8 +12,6 @@
     <string name="show_mask">Show mask</string>
     <string name="hide_mask">Hide mask</string>
 
-    <string name="tap_on_mask">Tap on mask to see another style</string>
-
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="record_audio">Record audio</string>
