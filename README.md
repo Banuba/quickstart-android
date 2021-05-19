@@ -1,4 +1,4 @@
-Quick start examples for [Banuba SDK on Android](https://docs.banuba.com/docs/android/android_overview).
+Quick start examples for [Banuba SDK on Android](https://docs.banuba.com/face-ar-sdk/android/android_overview).
 
 # Getting Started
 
