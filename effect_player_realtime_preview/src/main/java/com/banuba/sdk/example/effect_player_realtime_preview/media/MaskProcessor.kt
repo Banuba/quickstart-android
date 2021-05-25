@@ -232,7 +232,11 @@ class MaskProcessor(
                 orientation
             )
         }
-        throw RuntimeException("Unknown color format = $colorFormat")
+        throw RuntimeException(
+            "Unknown color format = $colorFormat [0x" + Integer.toHexString(
+                colorFormat
+            ) + "]"
+        )
 
     }
 

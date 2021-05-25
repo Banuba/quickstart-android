@@ -2,6 +2,7 @@ package com.banuba.sdk.example.effect_player_realtime_preview.media;
 
 import android.content.Context;
 import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
@@ -50,7 +51,7 @@ public class VideoExtractor extends BaseExtractor {
             @NonNull Uri sourceFileUri,
             @NonNull String mimePrefix,
             @Nullable DecoderVideoListener decoderVideoListener
-            ) throws IOException {
+    ) throws IOException {
         super(context, sourceFileUri, mimePrefix);
         mDecoderVideoListener = decoderVideoListener;
     }
@@ -81,7 +82,7 @@ public class VideoExtractor extends BaseExtractor {
             final String mime = Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME));
             decoder = MediaCodec.createDecoderByType(mime);
 
-            format.setInteger(MediaFormat.KEY_COLOR_FORMAT, COLOR_FormatYUV420Flexible);
+            format.setInteger(MediaFormat.KEY_COLOR_FORMAT, detectColorFormat(decoder, mime));
 
             decoder.configure(format, null, null, 0);
             decoder.start();
@@ -113,6 +114,22 @@ public class VideoExtractor extends BaseExtractor {
             }
         }
 
+    }
+
+    @SuppressWarnings("deprecation")
+    private int detectColorFormat(@NonNull MediaCodec decoder, @NonNull String mime) {
+
+        // https://source.android.com/compatibility/11/android-11-cdd#5_1_7_video_codecs
+        // Video decoders MUST support at least one of a planar or semiplanar YUV420 8:8:8 color format
+        final MediaCodecInfo.CodecCapabilities cap = decoder.getCodecInfo().getCapabilitiesForType(mime);
+        for (int i = 0; i < cap.colorFormats.length; i++) {
+            final int colorFormat = cap.colorFormats[i];
+            if (colorFormat == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar ||
+                    colorFormat == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) {
+                return colorFormat;
+            }
+        }
+        return COLOR_FormatYUV420Flexible;
     }
 
     private void doExtract(MediaExtractor extractor, int trackIndex, MediaCodec decoder) {
