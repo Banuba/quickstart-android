@@ -40,11 +40,7 @@ class FileUtils {
             val file = File(context.getExternalFilesDir(null), filename)
             val dir = file.parentFile
             dir?.mkdirs()
-            BufferedInputStream(context.assets.open(filename)).copyTo(
-                BufferedOutputStream(
-                    FileOutputStream(file)
-                )
-            )
+            context.assets.open(filename).copyTo(FileOutputStream(file))
             return file
         }
     }
