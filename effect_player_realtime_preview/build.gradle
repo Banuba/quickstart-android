@@ -23,6 +23,10 @@ android {
         }
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     // NOTE! Add if your project uses Kotlin as main language
     compileOptions {
         sourceCompatibility 1.8
