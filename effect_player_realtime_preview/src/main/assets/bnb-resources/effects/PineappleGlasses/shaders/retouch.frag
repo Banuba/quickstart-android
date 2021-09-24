@@ -1,4 +1,4 @@
-#version 300 es
+#include <bnb/glsl.frag>
 
 #define TEETH_WHITENING
 #define teethWhiteningCoeff 1.0
@@ -15,25 +15,34 @@
 #define eyesSharpenIntensity 0.3
 #define PSI 0.1
 
-precision highp float;
 
-layout( location = 0 ) out vec4 F;
-in vec2 var_uv, var_bg_uv;
-in mat4 sp;
+BNB_IN(0) vec2 var_uv;
+BNB_IN(1) vec2 var_bg_uv;
+BNB_IN(2) mat4 sp;
 
-uniform sampler2D selection_tex, lookupTexEyes, lookupTexTeeth, glfx_BACKGROUND;
+
+BNB_DECLARE_SAMPLER_2D(0, 1, selection_tex);
+
+BNB_DECLARE_SAMPLER_2D(4, 5, lookupTexEyes);
+
+BNB_DECLARE_SAMPLER_2D(2, 3, lookupTexTeeth);
+
+BNB_DECLARE_SAMPLER_2D(12, 13, glfx_BACKGROUND);
 
 #if defined(EYES_HIGHLIGHT)
-uniform sampler2D tex_highlight;
+
+BNB_DECLARE_SAMPLER_2D(10, 11, tex_highlight);
 #endif
 #ifdef SOFT_LIGHT_LAYER
-uniform sampler2D tex_softLight;
+
+BNB_DECLARE_SAMPLER_2D(6, 7, tex_softLight);
 #endif
 #ifdef NORMAL_LAYER
-uniform sampler2D  tex_normalMakeup;
+
+BNB_DECLARE_SAMPLER_2D(8, 9, tex_normalMakeup);
 #endif
 
-vec4 textureLookup(vec4 originalColor, sampler2D lookupTexture)
+vec4 textureLookup(vec4 originalColor, BNB_DECLARE_SAMPLER_2D_ARGUMENT(lookupTexture))
 {
     const float epsilon = 0.000001;
     const float lutSize = 512.0;
@@ -47,20 +56,20 @@ vec4 textureLookup(vec4 originalColor, sampler2D lookupTexture)
 
     float factor = blueValue - mulB.x;
 
-    vec3 sampled1 = textureLod(lookupTexture, lookup.zx, 0.).rgb;
-    vec3 sampled2 = textureLod(lookupTexture, lookup.wy, 0.).rgb;
+    vec3 sampled1 = BNB_TEXTURE_2D_LOD(BNB_SAMPLER_2D(lookupTexture), lookup.zx, 0.).rgb;
+    vec3 sampled2 = BNB_TEXTURE_2D_LOD(BNB_SAMPLER_2D(lookupTexture), lookup.wy, 0.).rgb;
 
     vec3 res = mix(sampled1, sampled2, factor);
     return vec4(res, originalColor.a);
 }
 
-vec4 whitening(vec4 originalColor, float factor, sampler2D lookup) {
-    vec4 color = textureLookup(originalColor, lookup);
+vec4 whitening(vec4 originalColor, float factor, BNB_DECLARE_SAMPLER_2D_ARGUMENT(lookup)) {
+    vec4 color = textureLookup(originalColor, BNB_PASS_SAMPLER_ARGUMENT(lookup));
     return mix(originalColor, color, factor);
 }
 
 vec4 sharpen(vec4 originalColor, float factor) {
-    vec4 total = 5.0 * originalColor - texture(glfx_BACKGROUND, sp[0].zw) - texture(glfx_BACKGROUND, sp[1].zw) - texture(glfx_BACKGROUND, sp[2].zw) - texture(glfx_BACKGROUND, sp[3].zw);
+    vec4 total = 5.0 * originalColor - BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[0].zw) - BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[1].zw) - BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[2].zw) - BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[3].zw);
     vec4 result = mix(originalColor, total, factor);
     return clamp(result, 0.0, 1.0);;
 }
@@ -86,10 +95,10 @@ vec4 softSkin(vec4 originalColor, float factor) {
     float summ = 1.0;
     
     mat4 nextColor;
-    nextColor[0] = texture(glfx_BACKGROUND, sp[0].xy);
-    nextColor[1] = texture(glfx_BACKGROUND, sp[1].xy);
-    nextColor[2] = texture(glfx_BACKGROUND, sp[2].xy);
-    nextColor[3] = texture(glfx_BACKGROUND, sp[3].xy);
+    nextColor[0] = BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[0].xy);
+    nextColor[1] = BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[1].xy);
+    nextColor[2] = BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[2].xy);
+    nextColor[3] = BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), sp[3].xy);
     vec4 nextIntensity = getLuminance4(nextColor);
     vec4 curr = 0.367 * getWeight(intensity, nextIntensity);
     summ += dot(curr, vec4(1.0));
@@ -114,8 +123,8 @@ vec3 blendSoftLight(vec3 base, vec3 blend, float opacity) {
 
 void main()
 {
-    vec4 maskColor = texture(selection_tex, var_uv);
-    vec4 res = texture( glfx_BACKGROUND, var_bg_uv );
+    vec4 maskColor = BNB_TEXTURE_2D(BNB_SAMPLER_2D(selection_tex), var_uv);
+    vec4 res = BNB_TEXTURE_2D(BNB_SAMPLER_2D(glfx_BACKGROUND), var_bg_uv );
     
 #ifdef SOFT_SKIN
     res = softSkin(res, maskColor.r * skinSoftIntensity);
@@ -132,7 +141,7 @@ void main()
 #endif
     
 #if defined(TEETH_WHITENING)
-    res = whitening(res, maskColor.g * teethWhiteningCoeff, lookupTexTeeth);
+    res = whitening(res, maskColor.g * teethWhiteningCoeff, BNB_PASS_SAMPLER_ARGUMENT(lookupTexTeeth));
 #endif
     
     
@@ -141,24 +150,24 @@ void main()
 #endif
     
 #if defined(EYES_WHITENING)
-    res = whitening(res, maskColor.b * eyesWhiteningCoeff, lookupTexEyes);
+    res = whitening(res, maskColor.b * eyesWhiteningCoeff, BNB_PASS_SAMPLER_ARGUMENT(lookupTexEyes));
 #endif
     
 #if defined(EYES_HIGHLIGHT)
-    res = res + vec4( texture( tex_highlight, var_uv ).xyz, 0. );
+    res = res + vec4( BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_highlight), var_uv ).xyz, 0. );
 #endif
 
     vec2 uvh = var_uv;
     uvh.x = abs(2.0 * (uvh.x - 0.5));
 
 #ifdef SOFT_LIGHT_LAYER
-    res.xyz = blendSoftLight( res.xyz, texture( tex_softLight, uvh ).xyz );
+    res.xyz = blendSoftLight( res.xyz, BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_softLight), uvh ).xyz );
 #endif
 
 #ifdef NORMAL_LAYER
-    vec4 makeup2 = texture( tex_normalMakeup, uvh );
+    vec4 makeup2 = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_normalMakeup), uvh );
     res.xyz = mix( res.xyz, makeup2.xyz, makeup2.w );
 #endif
 
-    F = res;
+    bnb_FragColor = res;
 }

@@ -1,54 +1,49 @@
-#version 300 es
+#include <bnb/glsl.frag>
 
-precision highp float;
-precision highp sampler2DArray;
-precision highp sampler2DShadow;
 
 #define GLFX_IBL
 #define GLFX_TBN
 #define GLFX_TEX_MRAO
 #define GLFX_LIGHTING
 
-in vec2 var_uv;
+BNB_IN(0) vec2 var_uv;
 #ifdef GLFX_TBN
-in vec3 var_t;
-in vec3 var_b;
+BNB_IN(1) vec3 var_t;
+BNB_IN(2) vec3 var_b;
 #endif
-in vec3 var_n;
-in vec3 var_v;
+BNB_IN(3) vec3 var_n;
+BNB_IN(4) vec3 var_v;
 
-layout( location = 0 ) out vec4 frag_color;
 
-uniform sampler2D tex_diffuse;
+
+BNB_DECLARE_SAMPLER_2D(0, 1, tex_diffuse);
 #ifdef GLFX_TBN
-uniform sampler2D tex_normal;
+
+BNB_DECLARE_SAMPLER_2D(2, 3, tex_normal);
 #endif
 #ifdef GLFX_TEX_MRAO
-uniform sampler2D tex_mrao;
+
+BNB_DECLARE_SAMPLER_2D(10, 11, tex_mrao);
 #else
-uniform sampler2D tex_metallic;
-uniform sampler2D tex_roughness;
 #ifdef GLFX_AO
-uniform sampler2D tex_ao;
 #endif
 #endif
 #ifdef GLFX_TEX_EMI
-uniform sampler2D tex_emi;
 #endif
 
-#ifdef GLFX_USE_SHADOW
-in vec3 var_shadow_coord;
-uniform sampler2DShadow glfx_SHADOW;
+#ifdef BNB_USE_SHADOW
+
+BNB_IN(5) vec3 var_shadow_coord;
 float glfx_shadow_factor()
 {
-    const vec2 offsets[] = vec2[](
-        vec2( -0.94201624, -0.39906216 ),
-        vec2( 0.94558609, -0.76890725 ),
-        vec2( -0.094184101, -0.92938870 ),
-        vec2( 0.34495938, 0.29387760 )
-    );
+
+	vec2 offsets[4];
+	offsets[0] = vec2( -0.94201624, -0.39906216 );
+	offsets[1] = vec2( 0.94558609, -0.76890725 );
+	offsets[2] = vec2( -0.094184101, -0.92938870 );
+	offsets[3] = vec2( 0.34495938, 0.29387760 );
     float s = 0.;
-    for( int i = 0; i != offsets.length(); ++i )
+    for( int i = 0; i != 4 /*assume that offsets.length() was called.*/; ++i )
         s += texture( glfx_SHADOW, var_shadow_coord + vec3(offsets[i]/110.,0.1) );
     s *= 0.125;
     return s;
@@ -104,32 +99,38 @@ float diffuse_factor( float n_l, float w )
 }
 
 #ifdef GLFX_IBL
-uniform sampler2D tex_brdf;
-uniform samplerCube tex_ibl_diff, tex_ibl_spec;
+
+BNB_DECLARE_SAMPLER_2D(4, 5, tex_brdf);
+
+BNB_DECLARE_SAMPLER_CUBE(6, 7, tex_ibl_diff);
+
+BNB_DECLARE_SAMPLER_CUBE(8, 9, tex_ibl_spec);
 #endif
 
 #ifdef GLFX_LIGHTS
 // direction in xyz, lwrap in w
-const vec4 lights[] = vec4[]( 
-    vec4(0.,0.6,0.8,1.),
-    vec4(normalize(vec3(97.6166,-48.185,183.151)),1.)
-    );
-const vec3 radiance[] = vec3[]( 
-    vec3(1.,1.,1.)*2.,
-    vec3(1.,1.,1.)*0.9*2.
-    );
 #endif
 
 void main()
 {
-    vec4 base_opacity = texture(tex_diffuse,var_uv);
+#ifdef GLFX_LIGHTS
+	vec3 radiance[2];
+	radiance[1] = vec3(1.,1.,1.)*0.9*2.;
+	radiance[0] = vec3(1.,1.,1.)*2.;
+#endif
+#ifdef GLFX_LIGHTS
+	vec4 lights[2];
+	lights[1] = vec4(normalize(vec3(97.6166,-48.185,183.151)),1.);
+	lights[0] = vec4(0.,0.6,0.8,1.);
+#endif
+    vec4 base_opacity = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_diffuse),var_uv);
 
     //if( base_opacity.w < 0.5 ) discard;
 
     vec3 base = g2l(base_opacity.xyz);
     float opacity = base_opacity.w;
 #ifdef GLFX_TEX_MRAO
-    vec3 mrao = texture(tex_mrao,var_uv).xyz;
+    vec3 mrao = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_mrao),var_uv).xyz;
 #ifdef GLFX_DIELECTRIC
     float metallic = 0.;
 #else
@@ -140,16 +141,16 @@ void main()
 #ifdef GLFX_DIELECTRIC
     float metallic = 0.;
 #else
-    float metallic = texture(tex_metallic,var_uv).x;
+    float metallic = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_metallic),var_uv).x;
 #endif
-    float roughness = texture(tex_roughness,var_uv).x;
+    float roughness = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_roughness),var_uv).x;
 #endif
 
 #ifdef GLFX_TBN
 #ifdef GLFX_NORMAL_DIRECTX
-    vec3 N = normalize( mat3(var_t,var_b,var_n)*(texture(tex_normal,var_uv).xyz*vec3(2.,-2.,2.)-vec3(1.,-1.,1.)) );
+    vec3 N = normalize( mat3(var_t,var_b,var_n)*(BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_normal),var_uv).xyz*vec3(2.,-2.,2.)-vec3(1.,-1.,1.)) );
 #else
-    vec3 N = normalize( mat3(var_t,var_b,var_n)*(texture(tex_normal,var_uv).xyz*2.-1.) );
+    vec3 N = normalize( mat3(var_t,var_b,var_n)*(BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_normal),var_uv).xyz*2.-1.) );
 #endif
 #else
     vec3 N = normalize( var_n );
@@ -169,11 +170,11 @@ void main()
     vec3 F = fresnel_schlick_roughness( cN_V, F0, roughness );
     vec3 kD = ( 1. - F )*( 1. - metallic );   
     
-    vec3 diffuse = texture( tex_ibl_diff, N ).xyz * base;
+    vec3 diffuse = BNB_TEXTURE_CUBE(BNB_SAMPLER_CUBE(tex_ibl_diff), N ).xyz * base;
     
     const float MAX_REFLECTION_LOD = 7.; // number of mip levels in tex_ibl_spec
-    vec3 prefilteredColor = textureLod( tex_ibl_spec, R, roughness*MAX_REFLECTION_LOD ).xyz;
-    vec2 brdf = texture( tex_brdf, vec2( cN_V, roughness ) ).yx;
+    vec3 prefilteredColor = BNB_TEXTURE_CUBE_LOD(BNB_SAMPLER_CUBE(tex_ibl_spec), R, roughness*MAX_REFLECTION_LOD ).xyz;
+    vec2 brdf = BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_brdf), vec2( cN_V, roughness ) ).yx;
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
     vec3 color = (kD*diffuse + specular);
@@ -183,7 +184,7 @@ void main()
 
 #ifdef GLFX_LIGHTS
     float ggx2 = geometry_schlick_GGX( cN_V, roughness );
-    for( int i = 0; i != lights.length(); ++i )
+    for( int i = 0; i != 2 /*assume that lights.length() was called.*/; ++i )
     {
         vec3 L = lights[i].xyz;
         float lwrap = lights[i].w;
@@ -209,17 +210,18 @@ void main()
 #ifdef GLFX_TEX_MRAO
     color *= mrao.z;
 #else
-    color *= texture(tex_ao,var_uv).x;
+    color *= BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_ao),var_uv).x;
 #endif
 #endif
 
 #ifdef GLFX_TEX_EMI
-    color += g2l(texture(tex_emi,var_uv).xyz);
+    color += g2l(BNB_TEXTURE_2D(BNB_SAMPLER_2D(tex_emi),var_uv).xyz);
 #endif
 
-#ifdef GLFX_USE_SHADOW
+#ifdef BNB_USE_SHADOW
+
     color = mix( color, vec3(0.), glfx_shadow_factor() );
 #endif
 
-    frag_color = vec4(l2g(color),opacity);
+    bnb_FragColor = vec4(l2g(color),opacity);
 }
