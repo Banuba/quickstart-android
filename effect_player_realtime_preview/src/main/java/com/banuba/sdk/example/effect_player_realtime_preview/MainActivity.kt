@@ -22,5 +22,10 @@ class MainActivity : AppCompatActivity() {
         recordVideoButton.setOnClickListener {
             startActivity(Intent(applicationContext, VideoRecordingActivity::class.java))
         }
+
+        videoMaskButton.setOnClickListener {
+            startActivity(Intent(applicationContext, VideoMaskActivity::class.java))
+        }
+
     }
 }

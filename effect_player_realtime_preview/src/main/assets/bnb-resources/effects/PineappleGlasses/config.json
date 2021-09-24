@@ -1,0 +1,37 @@
+{
+  "name": "PineappleGlasses",
+  "frx": {
+    "type": "3d_anim",
+    "3d_anim": {
+      "type": "vfx"
+    }
+  },
+  
+  "final" : {
+      "type" : "FILTER",
+
+      "filter" : {
+        "fragmentCode" : "finalColorFilter.fsh",
+        "textures" : [{
+          "file" : "LUT_sunny.png",
+          "sampler" : "lookupTexture",
+          "magFilter" : "LINEAR",
+          "minFilter" : "LINEAR"
+      }] 
+   }
+  },
+  "backgroundSeparation": {
+    "type": "MEDIA",
+    "media": {
+      "type": "VIDEO",
+      "file": "Back_F.mp4",
+      "videoSpeed": 0.8,
+      "blend": "ADD",
+      "mode": "RGBA"
+    }
+  },
+   "sounds" : [
+                  { "trackName" : "music.ogg" }
+                  ],
+  "recordDuration": 15
+}
