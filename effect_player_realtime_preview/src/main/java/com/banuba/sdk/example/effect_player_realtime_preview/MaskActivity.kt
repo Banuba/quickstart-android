@@ -61,7 +61,9 @@ class MaskActivity : AppCompatActivity() {
                 effect = banubaSdkManager.effectManager.loadAsync(maskUri.toString())
             } else {
                 // The mask is unloaded
-                banubaSdkManager.effectManager.unload(effect)
+                banubaSdkManager.runOnRenderThread {
+                    banubaSdkManager.effectManager.unload(effect)
+                }
             }
         }
     }
