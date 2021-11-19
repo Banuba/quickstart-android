@@ -76,7 +76,7 @@ class MaskProcessor(
                         player = EffectPlayer.create(config)
                         player?.setRenderConsistencyMode(ConsistencyMode.SYNCHRONOUS)
                         player?.surfaceCreated(rw, rh)
-                        player?.setEffectVolume(0f)
+                        // player?.effectManager()?.setEffectVolume(0f)
                         player?.playbackPlay()
                         val effectManager = player?.effectManager()
                         effectManager?.load(maskName)
