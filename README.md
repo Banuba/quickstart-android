@@ -5,12 +5,9 @@ Please use [v0.x](../../tree/v0.x) branch for SDK version 0.x (e.g. v0.38).
 
 ## Getting Started
 
-1. Get the latest Banuba SDK archive for Android and the client token. Please fill in our form on [form on banuba.com](https://www.banuba.com/face-filters-sdk) website, or contact us via [info@banuba.com](mailto:info@banuba.com).
-2. Copy `aar` files from the Banuba SDK archive into `libs` dir:
-    `BNBEffectPlayer/bin/banuba_sdk/banuba_sdk-release.aar` => `quickstart-android/libs/`
-    `BNBEffectPlayer/banuba_effect_player-release.aar` => `quickstart-android/libs/`
-3. Copy and Paste your client token into appropriate section of `quickstart-android/client_token/com/banuba/sdk/example/common/BanubaClientToken.kt`
-4. Open the project in Android Studio and run the necessary target using the usual steps.
+1. Get the latest Banuba SDK client token. Please fill in our form on [form on banuba.com](https://www.banuba.com/face-filters-sdk) website, or contact us via [info@banuba.com](mailto:info@banuba.com).
+2. Copy and Paste your client token into appropriate section of `quickstart-android/client_token/com/banuba/sdk/example/common/BanubaClientToken.kt`
+3. Open the project in Android Studio and run the necessary target using the usual steps.
 
 ## Contributing
 
