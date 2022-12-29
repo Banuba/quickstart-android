@@ -10,7 +10,7 @@ Before you commit to a license, you are free to test all the features of the SDK
 We will get back to you with the trial token.
 You can store the token within the app.  
 
-Feel free to [contact us](https://www.banuba.com/facear-sdk/face-filters#form) if you have any questions.
+Feel free to [contact us](https://docs.banuba.com/face-ar-sdk-v1/support) if you have any questions.
 
 ### Getting Started
 
