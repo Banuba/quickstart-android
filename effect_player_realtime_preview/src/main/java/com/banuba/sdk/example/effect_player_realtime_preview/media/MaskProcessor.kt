@@ -12,7 +12,6 @@ import com.banuba.sdk.encoding.sync.EncoderSync
 import com.banuba.sdk.internal.gl.EglCore
 import com.banuba.sdk.internal.gl.OffscreenSurface
 import com.banuba.sdk.internal.gl.WindowSurface
-import com.banuba.sdk.recognizer.FaceSearchMode
 import com.banuba.sdk.types.FullImageData
 import java.io.File
 import java.nio.ByteBuffer
@@ -67,11 +66,7 @@ class MaskProcessor(
 
                     if (player == null) {
 
-                        val config = EffectPlayerConfiguration(
-                            rw, rh,
-                            NnMode.ENABLE, FaceSearchMode.GOOD,
-                            false, true
-                        )
+                        val config = EffectPlayerConfiguration.create(rw, rh)
 
                         player = EffectPlayer.create(config)
                         player?.setRenderConsistencyMode(ConsistencyMode.SYNCHRONOUS)
