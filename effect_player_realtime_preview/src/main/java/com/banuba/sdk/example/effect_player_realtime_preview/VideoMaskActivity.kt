@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
 class VideoMaskActivity : AppCompatActivity() {
 
     companion object {
-        private const val MASK_NAME = "TrollGrandma"
+        private const val MASK_NAME = "effects/TrollGrandma"
         private const val VIDEO_FILE = "face_video_720p.mp4"
     }
 
