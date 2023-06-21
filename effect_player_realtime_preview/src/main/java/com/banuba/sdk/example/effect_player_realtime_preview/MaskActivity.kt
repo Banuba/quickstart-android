@@ -59,6 +59,9 @@ class MaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_apply_mask)
 
+        player.use(CameraInput(cameraDevice))
+        player.use(surfaceOutput)
+
         // Set custom OnTouchListener to change mask style.
         surfaceView.setOnTouchListener(PlayerTouchListener(this, player))
 
@@ -79,10 +82,8 @@ class MaskActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        player.use(surfaceOutput)
-
         if (allPermissionsGranted()) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_APPLY_MASK_PERMISSION)
         }
@@ -94,20 +95,11 @@ class MaskActivity : AppCompatActivity() {
             results: IntArray
     ) {
         if (requireAllPermissionsGranted(permissions, results)) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             finish()
         }
         super.onRequestPermissionsResult(requestCode, permissions, results)
-    }
-
-    private fun startCameraPreview() {
-        cameraDevice.configurator
-            .setVideoCaptureSize(CameraDeviceConfigurator.HD_CAPTURE_SIZE)
-            .setLens(CameraDeviceConfigurator.LensSelector.FRONT)
-            .commit();
-        cameraDevice.start()
-        player.use(CameraInput(cameraDevice))
     }
 
     override fun onResume() {
@@ -121,10 +113,15 @@ class MaskActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
+        cameraDevice.stop()
         super.onStop()
+    }
+
+    override fun onDestroy() {
         cameraDevice.close()
         surfaceOutput.close()
         player.close()
+        super.onDestroy()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

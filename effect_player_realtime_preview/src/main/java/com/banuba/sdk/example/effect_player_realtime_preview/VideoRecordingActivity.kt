@@ -65,6 +65,10 @@ class VideoRecordingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_recording)
 
+        player.use(CameraInput(cameraDevice))
+        player.addOutput(surfaceOutput)
+        player.addOutput(videoOutput)
+
         recordActionButton.setOnClickListener {
             isRecording = !isRecording
 
@@ -81,11 +85,8 @@ class VideoRecordingActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        player.addOutput(surfaceOutput)
-        player.addOutput(videoOutput)
-
         if (allPermissionsGranted()) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_VIDEO_RECORDING_PERMISSION)
         }
@@ -97,20 +98,11 @@ class VideoRecordingActivity : AppCompatActivity() {
             results: IntArray
     ) {
         if (requireAllPermissionsGranted(permissions, results)) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             finish()
         }
         super.onRequestPermissionsResult(requestCode, permissions, results)
-    }
-
-    private fun startCameraPreview() {
-        cameraDevice.configurator
-            .setVideoCaptureSize(CameraDeviceConfigurator.HD_CAPTURE_SIZE)
-            .setLens(CameraDeviceConfigurator.LensSelector.FRONT)
-            .commit();
-        cameraDevice.start()
-        player.use(CameraInput(cameraDevice))
     }
 
     override fun onResume() {
@@ -124,11 +116,22 @@ class VideoRecordingActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
+        cameraDevice.stop()
+
+        if (isRecording) {
+            isRecording = false
+            updateUiState()
+            videoOutput.stopRecordingAndWaitForFinish()
+        }
         super.onStop()
+    }
+
+    override fun onDestroy() {
         player.close()
         cameraDevice.close()
         surfaceOutput.close()
         videoOutput.close()
+        super.onDestroy()
     }
 
     private fun recordAudio() = recordAudioSwitch.isChecked

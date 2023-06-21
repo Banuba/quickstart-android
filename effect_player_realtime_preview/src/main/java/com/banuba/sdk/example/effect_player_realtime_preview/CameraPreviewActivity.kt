@@ -39,14 +39,15 @@ class CameraPreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera_preview)
+
+        player.use(CameraInput(cameraDevice))
+        player.use(surfaceOutput)
     }
 
     override fun onStart() {
         super.onStart()
-        player.use(surfaceOutput)
-
         if (allPermissionsGranted()) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_CAMERA_PREVIEW_PERMISSION)
         }
@@ -58,21 +59,11 @@ class CameraPreviewActivity : AppCompatActivity() {
         results: IntArray
     ) {
         if (requireAllPermissionsGranted(permissions, results)) {
-            startCameraPreview()
+            cameraDevice.start()
         } else {
             finish()
         }
         super.onRequestPermissionsResult(requestCode, permissions, results)
-    }
-
-
-    private fun startCameraPreview() {
-        cameraDevice.configurator
-            .setVideoCaptureSize(CameraDeviceConfigurator.HD_CAPTURE_SIZE)
-            .setLens(CameraDeviceConfigurator.LensSelector.FRONT)
-            .commit();
-        cameraDevice.start()
-        player.use(CameraInput(cameraDevice))
     }
 
     override fun onResume() {
@@ -86,10 +77,15 @@ class CameraPreviewActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
+        cameraDevice.stop()
         super.onStop()
+    }
+
+    override fun onDestroy() {
         cameraDevice.close()
         surfaceOutput.close()
         player.close()
+        super.onDestroy()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
