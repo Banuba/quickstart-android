@@ -33,8 +33,7 @@ public class VideoExtractor extends BaseExtractor {
     private int mRotation;
 
     public interface DecoderVideoListener {
-
-        void onVideoBufferDecoded(int rotation, int width, int height, int stride, int colorFormat, int sliceHeight, @NonNull ByteBuffer data, @NonNull MediaCodec.BufferInfo bufferInfo);
+        void onVideoBufferDecoded(int rotation, int width, int height, int stride, int sliceHeight, int colorFormat, @NonNull ByteBuffer data, @NonNull MediaCodec.BufferInfo bufferInfo);
     }
 
     @NonNull
