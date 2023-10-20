@@ -10,6 +10,7 @@
     <string name="record_video_description">Record video with Banuba SDK</string>
 
     <string name="mask_on_video">Mask on video</string>
+    <string name="mask_on_image">Mask on image</string>
 
     <string name="show_mask">Show mask</string>
     <string name="hide_mask">Hide mask</string>

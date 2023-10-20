@@ -27,5 +27,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, VideoMaskActivity::class.java))
         }
 
+        imageButton.setOnClickListener {
+            startActivity(Intent(applicationContext, ImageActivity::class.java))
+        }
+
     }
 }

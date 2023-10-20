@@ -45,6 +45,10 @@
             android:label="@string/record_video_description"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".ImageActivity"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.banuba.sdk.example.effect_player_realtime_preview"
