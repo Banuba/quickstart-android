@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import com.banuba.sdk.effect_player.CameraOrientation
 import com.banuba.sdk.entity.RecordedVideoInfo
@@ -13,9 +14,12 @@ import com.banuba.sdk.manager.BanubaSdkManager
 import com.banuba.sdk.manager.IEventCallback
 import com.banuba.sdk.types.Data
 import com.banuba.sdk.types.FullImageData
+import com.banuba.sdk.types.PixelFormat
 import kotlinx.android.synthetic.main.activity_image.applyEffect
 import kotlinx.android.synthetic.main.activity_image.imageSurface
 import kotlinx.android.synthetic.main.activity_image.imageView
+import java.util.concurrent.FutureTask
+import java.util.concurrent.RunnableFuture
 
 
 class ImageActivity : AppCompatActivity() {
@@ -87,17 +91,44 @@ class ImageActivity : AppCompatActivity() {
             banubaSdkManager.loadEffect(maskUri.toString(), true)
 
             Log.d(TAG, "Process image")
-            banubaSdkManager.processImage(
-                FullImageData(
-                    sourceBitmap, FullImageData.Orientation(CameraOrientation.DEG_0)
-                )
+            val image = FullImageData(
+                sourceBitmap,
+                FullImageData.Orientation(CameraOrientation.DEG_0)
             )
+            val task: RunnableFuture<Bitmap> = FutureTask {
+                banubaSdkManager.effectPlayer.processImage(
+                    image,
+                    PixelFormat.RGBA
+                ).use { processed ->
+                    val width: Int
+                    val height: Int
+                    val orientation: FullImageData.Orientation = image.orientation
+                    val size: Size = image.size
+                    if (orientation.cameraOrientation == CameraOrientation.DEG_90
+                        || orientation.cameraOrientation == CameraOrientation.DEG_270
+                    ) {
+                        width = size.height
+                        height = size.width
+                    } else {
+                        width = size.width
+                        height = size.height
+                    }
+
+                    // Config.ARGB_8888 has RGBA pixel order. Check the reference.
+                    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    bitmap.copyPixelsFromBuffer(processed.data)
+                    return@use bitmap
+                }
+            }
+            banubaSdkManager.runOnRenderThread(task)
+            val bitmap = task.get()
+            callback.onImageProcessed(bitmap) // or use bitmap
         }
     }
 
     override fun onStart() {
         super.onStart()
-        banubaSdkManager.attachSurface(imageSurface)
+//        banubaSdkManager.attachSurface(imageSurface)
     }
 
     private fun pickImage() {
