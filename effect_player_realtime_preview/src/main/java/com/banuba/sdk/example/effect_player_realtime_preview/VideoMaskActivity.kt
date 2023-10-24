@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.banuba.sdk.example.effect_player_realtime_preview.media.MaskProcessor
-import kotlinx.android.synthetic.main.activity_mask_video.*
+import com.banuba.sdk.example.effect_player_realtime_preview.media.VideoInput
+import com.banuba.sdk.example.effect_player_realtime_preview.media.VideoInput.IVideoFrameStatus
+import com.banuba.sdk.output.VideoOutput
+import com.banuba.sdk.player.Player
+import kotlinx.android.synthetic.main.activity_mask_video.btn_open_mask_video
+import kotlinx.android.synthetic.main.activity_mask_video.progress
 import java.io.File
 import kotlin.concurrent.thread
 
@@ -17,11 +21,28 @@ class VideoMaskActivity : AppCompatActivity() {
         private const val VIDEO_FILE = "face_video_720p.mp4"
     }
 
+    private val player by lazy(LazyThreadSafetyMode.NONE) {
+        Player()
+    }
+
+    private val videoInput by lazy(LazyThreadSafetyMode.NONE) {
+        VideoInput(this)
+    }
+
+    private val videoOutput by lazy(LazyThreadSafetyMode.NONE) {
+        VideoOutput()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mask_video)
 
         val outputFile = File(getExternalFilesDir(null), "$VIDEO_FILE.mask.mp4")
+
+        player.setRenderMode(Player.RenderMode.MANUAL)
+        player.load(MASK_NAME)
+        player.use(videoInput, videoOutput)
+        videoOutput.startRecording(outputFile)
 
         btn_open_mask_video.setOnClickListener {
 
@@ -35,17 +56,33 @@ class VideoMaskActivity : AppCompatActivity() {
         }
 
         thread(start = true) {
-            // New thread because MaskProcessor creates Open GL ES 3.0 Context
-
             val inputFile = FileUtils.copyFromAssetsToFile(this, VIDEO_FILE)
-            MaskProcessor(this, inputFile, outputFile, MASK_NAME).process()
+            videoInput.processVideoFile(inputFile, object : IVideoFrameStatus {
+                override fun onError(throwable: Throwable) {
+                    throw throwable;
+                }
+
+                override fun onFrameDecoded(frameTimeNanos: Long) {
+                    player.render()
+                }
+
+                override fun onFinished() {
+                    videoOutput.stopRecordingAndWaitForFinish();
+                }
+            })
+
+            videoOutput.close()
 
             progress.visibility = View.INVISIBLE
             runOnUiThread {
                 btn_open_mask_video.isEnabled = true
             }
         }
-
     }
 
+    override fun onDestroy() {
+        videoOutput.close()
+        player.close()
+        super.onDestroy()
+    }
 }

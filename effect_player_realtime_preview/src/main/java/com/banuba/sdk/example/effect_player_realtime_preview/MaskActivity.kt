@@ -4,12 +4,16 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.banuba.sdk.effect_player.Effect
+import com.banuba.sdk.input.CameraDevice
+import com.banuba.sdk.input.CameraDeviceConfigurator
+import com.banuba.sdk.input.CameraInput
 import com.banuba.sdk.manager.BanubaSdkManager
-import com.banuba.sdk.manager.BanubaSdkTouchListener
+import com.banuba.sdk.output.SurfaceOutput
+import com.banuba.sdk.player.Player
+import com.banuba.sdk.player.PlayerTouchListener
 import kotlinx.android.synthetic.main.activity_apply_mask.*
 import kotlinx.android.synthetic.main.activity_camera_preview.surfaceView
 
@@ -28,8 +32,16 @@ class MaskActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
-    private val banubaSdkManager by lazy(LazyThreadSafetyMode.NONE) {
-        BanubaSdkManager(applicationContext)
+    private val player by lazy(LazyThreadSafetyMode.NONE) {
+        Player()
+    }
+
+    private val cameraDevice by lazy(LazyThreadSafetyMode.NONE) {
+        CameraDevice(requireNotNull(this.applicationContext), this@MaskActivity)
+    }
+
+    private val surfaceOutput by lazy(LazyThreadSafetyMode.NONE) {
+        SurfaceOutput(surfaceView.holder)
     }
 
     private val maskUri by lazy(LazyThreadSafetyMode.NONE) {
@@ -47,9 +59,11 @@ class MaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_apply_mask)
 
-        // Set custom OnTouchListener to change mask style.
-        surfaceView.setOnTouchListener(BanubaSdkTouchListener(this, banubaSdkManager.effectPlayer))
+        player.use(CameraInput(cameraDevice))
+        player.use(surfaceOutput)
 
+        // Set custom OnTouchListener to change mask style.
+        surfaceView.setOnTouchListener(PlayerTouchListener(this, player))
 
         showMaskButton.setOnClickListener {
             shouldApply = !shouldApply
@@ -58,20 +72,18 @@ class MaskActivity : AppCompatActivity() {
 
             if (shouldApply) {
                 // The mask is loaded asynchronously and applied
-                effect = banubaSdkManager.effectManager.loadAsync(maskUri.toString())
+                effect = player.loadAsync(maskUri.toString())
             } else {
                 // The mask is unloaded
-                banubaSdkManager.effectManager.loadAsync("")
+                player.loadAsync("")
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        banubaSdkManager.attachSurface(surfaceView)
-
         if (allPermissionsGranted()) {
-            banubaSdkManager.openCamera()
+            cameraDevice.start()
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_APPLY_MASK_PERMISSION)
         }
@@ -83,26 +95,33 @@ class MaskActivity : AppCompatActivity() {
             results: IntArray
     ) {
         if (requireAllPermissionsGranted(permissions, results)) {
-            banubaSdkManager.openCamera()
+            cameraDevice.start()
         } else {
             finish()
         }
+        super.onRequestPermissionsResult(requestCode, permissions, results)
     }
 
     override fun onResume() {
         super.onResume()
-        banubaSdkManager.effectPlayer.playbackPlay()
+        player.play()
     }
 
     override fun onPause() {
         super.onPause()
-        banubaSdkManager.effectPlayer.playbackPause()
+        player.pause()
     }
 
     override fun onStop() {
+        cameraDevice.stop()
         super.onStop()
-        banubaSdkManager.releaseSurface()
-        banubaSdkManager.closeCamera()
+    }
+
+    override fun onDestroy() {
+        cameraDevice.close()
+        surfaceOutput.close()
+        player.close()
+        super.onDestroy()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

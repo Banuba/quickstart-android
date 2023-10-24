@@ -11,8 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.banuba.sdk.entity.ContentRatioParams
 import com.banuba.sdk.entity.RecordedVideoInfo
+import com.banuba.sdk.input.CameraDevice
+import com.banuba.sdk.input.CameraDeviceConfigurator
+import com.banuba.sdk.input.CameraInput
 import com.banuba.sdk.manager.BanubaSdkManager
 import com.banuba.sdk.manager.IEventCallback
+import com.banuba.sdk.output.SurfaceOutput
+import com.banuba.sdk.output.VideoOutput
+import com.banuba.sdk.player.Player
 import com.banuba.sdk.types.Data
 import kotlinx.android.synthetic.main.activity_camera_preview.surfaceView
 import kotlinx.android.synthetic.main.activity_video_recording.*
@@ -35,45 +41,22 @@ class VideoRecordingActivity : AppCompatActivity() {
         )
 
         private const val REQUEST_CODE_VIDEO_RECORDING_PERMISSION = 1002
-
-        private const val TAG = "VideoRecordingActivity"
-
-        private val HD_SIZE = Size(720, 1280)
     }
 
-    private val banubaSdkManager by lazy(LazyThreadSafetyMode.NONE) {
-        BanubaSdkManager(applicationContext).apply {
-            setCallback(banubaEventCallback)
-        }
+    private val player by lazy(LazyThreadSafetyMode.NONE) {
+        Player()
     }
 
-    private val banubaEventCallback = object : IEventCallback {
-        override fun onVideoRecordingFinished(videoInfo: RecordedVideoInfo) {
-            Log.d(TAG, "Video recording finished. Recorded file = ${videoInfo.filePath}," +
-                    "duration = ${videoInfo.recordedLength}")
-        }
+    private val cameraDevice by lazy(LazyThreadSafetyMode.NONE) {
+        CameraDevice(requireNotNull(this.applicationContext), this@VideoRecordingActivity)
+    }
 
-        override fun onVideoRecordingStatusChange(isStarted: Boolean) {
-            Log.d(TAG, "Video recording status changed. isRecording = $isStarted")
-        }
+    private val surfaceOutput by lazy(LazyThreadSafetyMode.NONE) {
+        SurfaceOutput(surfaceView.holder)
+    }
 
-        override fun onCameraOpenError(e: Throwable) {
-            // Implement custom error handling here
-        }
-
-        override fun onImageProcessed(imageBitmpa: Bitmap) {}
-
-        override fun onEditingModeFaceFound(faceFound: Boolean) {}
-
-        override fun onHQPhotoReady(photoBitmap: Bitmap) {}
-
-        override fun onEditedImageReady(imageBitmap: Bitmap) {}
-
-        override fun onFrameRendered(data: Data, width: Int, height: Int) {}
-
-        override fun onScreenshotReady(screenshotBitmap: Bitmap) {}
-
-        override fun onCameraStatus(isOpen: Boolean) {}
+    private val videoOutput by lazy(LazyThreadSafetyMode.NONE) {
+        VideoOutput()
     }
 
     private var isRecording = false
@@ -82,30 +65,28 @@ class VideoRecordingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_recording)
 
+        player.use(CameraInput(cameraDevice))
+        player.addOutput(surfaceOutput)
+        player.addOutput(videoOutput)
+
         recordActionButton.setOnClickListener {
             isRecording = !isRecording
 
             updateUiState()
 
             if (isRecording) {
-                banubaSdkManager.startVideoRecording(
-                        generateVideoFilePath(),
-                        recordAudio(),
-                        ContentRatioParams(HD_SIZE.width, HD_SIZE.height, false),
-                        1f // speed
-                )
+                videoOutput.recordAudioFromMicrophone(recordAudio())
+                videoOutput.startRecording(File(generateVideoFilePath()))
             } else {
-                banubaSdkManager.stopVideoRecording()
+                videoOutput.stopRecordingAndWaitForFinish()
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        banubaSdkManager.attachSurface(surfaceView)
-
         if (allPermissionsGranted()) {
-            banubaSdkManager.openCamera()
+            cameraDevice.start()
         } else {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_VIDEO_RECORDING_PERMISSION)
         }
@@ -117,26 +98,40 @@ class VideoRecordingActivity : AppCompatActivity() {
             results: IntArray
     ) {
         if (requireAllPermissionsGranted(permissions, results)) {
-            banubaSdkManager.openCamera()
+            cameraDevice.start()
         } else {
             finish()
         }
+        super.onRequestPermissionsResult(requestCode, permissions, results)
     }
 
     override fun onResume() {
         super.onResume()
-        banubaSdkManager.effectPlayer.playbackPlay()
+        player.play()
     }
 
     override fun onPause() {
         super.onPause()
-        banubaSdkManager.effectPlayer.playbackPause()
+        player.pause()
     }
 
     override fun onStop() {
+        cameraDevice.stop()
+
+        if (isRecording) {
+            isRecording = false
+            updateUiState()
+            videoOutput.stopRecordingAndWaitForFinish()
+        }
         super.onStop()
-        banubaSdkManager.releaseSurface()
-        banubaSdkManager.closeCamera()
+    }
+
+    override fun onDestroy() {
+        player.close()
+        cameraDevice.close()
+        surfaceOutput.close()
+        videoOutput.close()
+        super.onDestroy()
     }
 
     private fun recordAudio() = recordAudioSwitch.isChecked
