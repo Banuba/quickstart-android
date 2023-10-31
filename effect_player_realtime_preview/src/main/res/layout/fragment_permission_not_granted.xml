@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="63dp"
+        android:layout_marginBottom="115dp"
+        android:layout_above="@id/tvNoCamera1"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_no_camera"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tvNoCamera1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="We can\'t see you"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/tvNoCamera2"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/tvNoCamera2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Allow access to your camera\nto start using this app"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/teal_700"
+        android:letterSpacing="0.01"
+        android:layout_marginBottom="15dp"
+        android:layout_above="@id/btnAllowCameraAccessBtn"
+        android:layout_centerHorizontal="true"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/btnAllowCameraAccessBtn"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="@drawable/button_main"
+        android:gravity="center"
+        android:text="Allow camera"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textAllCaps="true"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="0.05"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="50dp"/>
+
+</RelativeLayout>

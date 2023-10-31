@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.FAR"
         android:requestLegacyExternalStorage="true"
         android:largeHeap="true">
         <activity android:name=".MainActivity"
@@ -25,29 +25,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".CameraPreviewActivity"
-            android:label="@string/camera_preview_description"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".MaskActivity"
-            android:label="@string/apply_mask_description"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".VideoRecordingActivity"
-            android:label="@string/record_video_description"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".VideoMaskActivity"
-            android:label="@string/record_video_description"
-            android:screenOrientation="portrait"/>
-
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.banuba.sdk.example.effect_player_realtime_preview"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
