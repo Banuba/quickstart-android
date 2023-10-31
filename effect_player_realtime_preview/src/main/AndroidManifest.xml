@@ -17,7 +17,8 @@
         android:requestLegacyExternalStorage="true"
         android:largeHeap="true">
         <activity android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.banuba.sdk.example.effect_player_realtime_preview.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
