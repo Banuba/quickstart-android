@@ -16,8 +16,13 @@
 
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="play">Play</string>
     <string name="record_audio">Record audio</string>
 
+    <string name="open_original">Open original video</string>
+
+    <string name="process_video">Process video</string>
+    <string name="wait_for_processing">Wait for processing . . .</string>
     <string name="open_video">Open Created Video</string>
 
 </resources>
